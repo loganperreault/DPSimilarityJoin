@@ -6,12 +6,13 @@ public class DPTableTree {
 	
 	public DPTableTree() {
 		
+		root.setSize(5);
 		root = DPTableRow.getRoot();
 		
-		root.addChild("a").addChild("x");
-		DPTableRow b = root.addChild("b");
-		b.addChild("y");
-		b.addChild("z");
+//		root.addChild("a").addChild("x");
+//		DPTableRow b = root.addChild("b");
+//		b.addChild("y");
+//		b.addChild("z");
 		
 	}
 	
