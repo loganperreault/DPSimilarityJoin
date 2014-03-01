@@ -6,7 +6,6 @@ import java.util.Map;
 public class DPTableRow {
 	
 	private static DPTableRow root = null;
-	protected DPTableRow parent = null;
 	protected Map<String, DPTableRow> children = new HashMap<>();
 	protected String value = null;
 	protected int index = 0;
@@ -34,19 +33,15 @@ public class DPTableRow {
 		size = sz;
 	}
 	
-	public DPTableRow(DPTableRow parent, String value, int index) {
+	private DPTableRow(String value, int index) {
 		if (value.length() != 1)
 			throw new IllegalArgumentException("Value must be a single character.");
-		if (parent == null)
-			throw new IllegalArgumentException("Parent cannot be null.");
-		this.parent = parent;
 		this.value = value;
-		parent.addChild(this);
 		columns[0] = index*MultiEditDistance.deletionCost;
 	}
 	
 	protected DPTableRow addChild(String value) {
-		DPTableRow child = new DPTableRow(this, value, index++);
+		DPTableRow child = new DPTableRow(value, index++);
 		children.put(child.value, child);
 		return child;
 	}
