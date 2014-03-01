@@ -6,10 +6,10 @@ import java.util.Map;
 public class DPTableRow {
 	
 	private static DPTableRow root = null;
-	protected Map<String, DPTableRow> children = new HashMap<>();
-	protected String value = null;
+	protected Map<Character, DPTableRow> children = new HashMap<>();
+	protected Character value = null;
 	protected int index = 0;
-	protected int[] columns;
+	protected Integer[] columns;
 	protected static int size = 0;
 	
 	public static DPTableRow getRoot() {
@@ -21,10 +21,10 @@ public class DPTableRow {
 	}
 	
 	private DPTableRow(int numCols) {
-		value = "ROOT";
-		columns = new int[numCols];
+		value = null;
+		columns = new Integer[numCols];
 		for (int i = 0; i < numCols; i++)
-			columns[i] = i;
+			columns[i] = i*MultiEditDistance.insertionCost;
 	}
 	
 	public static void setSize(int sz) {
@@ -33,32 +33,33 @@ public class DPTableRow {
 		size = sz;
 	}
 	
-	private DPTableRow(String value, int index) {
-		if (value.length() != 1)
-			throw new IllegalArgumentException("Value must be a single character.");
+	private DPTableRow(char value, int index, int size) {
+		this.index = index;
+		this.size = size;
+		columns = new Integer[size];
 		this.value = value;
 		columns[0] = index*MultiEditDistance.deletionCost;
 	}
 	
-	protected DPTableRow addChild(String value) {
-		DPTableRow child = new DPTableRow(value, index++);
-		children.put(child.value, child);
-		return child;
-	}
-	
-	protected DPTableRow addChild(DPTableRow child) {
+	protected DPTableRow addChild(char value) {
+		DPTableRow child = new DPTableRow(value, ++index, size);
 		children.put(child.value, child);
 		return child;
 	}
 	
 	public String toString() {
-		return value;
+		return String.valueOf(value);
 	}
 	
 	public String getRowString(int[] columnWidths) {
 		String row = "";
 		for (int i = 0; i < columns.length; i++) {
-			row += String.format("%1$" + columnWidths[i] + "s ", columns[i]*MultiEditDistance.insertionCost) + "|";
+			String val;
+			if (columns[i] != null)
+				val = String.valueOf(columns[i]);
+			else
+				val = "XX";
+			row += String.format("%1$" + columnWidths[i] + "s ", val) + "|";
 		}
 		return row;
 	}

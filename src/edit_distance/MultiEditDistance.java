@@ -11,6 +11,7 @@ public class MultiEditDistance {
 	protected static int deletionCost = 1;
 	protected static int substitutionCost = 1;
 	protected static int matchCost = 0;
+	protected static boolean maximizing = false;
 	
 	public Map.Entry<String, Integer> findSimilar(Predicate predicate, Map.Entry<String, Integer> word) {
 	     

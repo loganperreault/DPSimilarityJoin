@@ -21,12 +21,17 @@ public class DPTable {
 			columnWidths[i] = indexPaddingSize;
 		
 		DPTableRow.setSize(numCols);
-		DPTableRow root = DPTableRow.getRoot();
-		rows[0] = root;
+		root = DPTableRow.getRoot();
+		
+		calculate();
 	}
 	
 	public void calculate() {
-		
+		rows[0] = root;
+		for (int i = 1; i < numRows; i++) {
+			rows[i] = rows[i-1].addChild(string2.charAt(i-1));
+			//break;
+		}
 	}
 	
 	public String toString() {
