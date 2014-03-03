@@ -34,7 +34,9 @@ public class MultiEditDistance {
 	    	System.out.println(word.getKey()+" vs "+pair2.getKey());
 	    	
 	    	DPTable table = new DPTable(word.getKey(), pair2.getKey());
+	    	table.calculate(0.9);
 	    	System.out.println(table);
+	    	System.out.println("SIMILARITY: "+table.getSimilarity());
 	    	
 	    	// store the most similar word so far in a variable
 	        if (value > bestMatchValue) {

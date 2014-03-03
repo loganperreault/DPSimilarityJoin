@@ -10,6 +10,9 @@ import edit_distance.MultiEditDistance;
 
 public class Driver {
 	
+	// TODO: look into first counting the number of matches for letters
+	// and storing in a hashmap so we can do better with early stopping
+	
 	/**
 	 * @param args
 	 */
@@ -21,7 +24,8 @@ public class Driver {
 		Map.Entry<String, Integer> base = new AbstractMap.SimpleEntry<String, Integer>("Kurt Russell", 1);
 		//Predicate starring = new Predicate("data/starring.txt");
 		List<String> actors = new ArrayList<>();
-		actors.add("Kurt BRussle");
+		//actors.add("Kurt BRussle");
+		actors.add("Henry Russell");
 		//actors.add("Samuel Jackson");
 		//actors.add("Samuel L Jackson");
 		//actors.add("Kurt Russel");
