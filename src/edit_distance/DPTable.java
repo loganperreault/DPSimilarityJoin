@@ -14,8 +14,8 @@ public class DPTable {
 	private boolean calculated = false;
 	
 	public DPTable(String string1, String string2) {
-		this.string1 = string1;
-		this.string2 = string2;
+		this.string1 = string1.toLowerCase();
+		this.string2 = string2.toLowerCase();
 		this.maxEdits = Math.max(string1.length(), string2.length());
 		numCols = string1.length() + 1;
 		numRows = string2.length() + 1;
@@ -26,7 +26,6 @@ public class DPTable {
 		for (int i = 0; i < numCols; i++)
 			columnWidths[i] = indexPaddingSize;
 		
-		DPTableRow.setSize(numCols);
 		root = DPTableRow.getRoot();
 		tree = new DPTableTree(root);
 	}

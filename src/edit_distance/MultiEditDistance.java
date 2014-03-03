@@ -6,7 +6,7 @@ import driver.Predicate;
 
 public class MultiEditDistance {
 	
-	double threshold = 0.9;
+	double threshold = 0.6;
 	protected static int insertionCost = 1;
 	protected static int deletionCost = 1;
 	protected static int substitutionCost = 1;
@@ -34,8 +34,8 @@ public class MultiEditDistance {
 	    	System.out.println(word.getKey()+" vs "+pair2.getKey());
 	    	
 	    	DPTable table = new DPTable(word.getKey(), pair2.getKey());
-	    	table.calculate(0.9);
-	    	System.out.println(table);
+	    	table.calculate(threshold);
+	    	//System.out.println(table);
 	    	System.out.println("SIMILARITY: "+table.getSimilarity());
 	    	
 	    	// store the most similar word so far in a variable
@@ -44,7 +44,7 @@ public class MultiEditDistance {
                 bestMatch = pair2;
 	        }
 	        
-	        break;
+	        //break;
 	        
 	    }
 	    
