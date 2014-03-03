@@ -7,9 +7,9 @@ public class DPTableRow {
 	
 	private static DPTableRow root = null;
 	protected Map<Character, DPTableRow> children = new HashMap<>();
-	protected Character value = null;
+	protected Character character = null;
 	protected int index = 0;
-	protected Integer[] columns;
+	protected DPTableCell[] columns;
 	protected static int size = 0;
 	
 	public static DPTableRow getRoot() {
@@ -21,10 +21,10 @@ public class DPTableRow {
 	}
 	
 	private DPTableRow(int numCols) {
-		value = null;
-		columns = new Integer[numCols];
+		character = null;
+		columns = new DPTableCell[numCols];
 		for (int i = 0; i < numCols; i++)
-			columns[i] = i*MultiEditDistance.insertionCost;
+			columns[i] = new DPTableCell(i*MultiEditDistance.insertionCost);
 	}
 	
 	public static void setSize(int sz) {
@@ -36,19 +36,19 @@ public class DPTableRow {
 	private DPTableRow(char value, int index, int size) {
 		this.index = index;
 		this.size = size;
-		columns = new Integer[size];
-		this.value = value;
-		columns[0] = index*MultiEditDistance.deletionCost;
+		columns = new DPTableCell[size];
+		this.character = value;
+		columns[0] = new DPTableCell(index*MultiEditDistance.deletionCost);
 	}
 	
 	protected DPTableRow addChild(char value) {
 		DPTableRow child = new DPTableRow(value, ++index, size);
-		children.put(child.value, child);
+		children.put(child.character, child);
 		return child;
 	}
 	
 	public String toString() {
-		return String.valueOf(value);
+		return String.valueOf(character);
 	}
 	
 	public String getRowString(int[] columnWidths) {

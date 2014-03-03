@@ -7,6 +7,7 @@ public class DPTable {
 	DPTableRow[] rows;
 	int[] columnWidths;
 	DPTableRow root;
+	DPTableTree tree;
 	
 	public DPTable(String string1, String string2) {
 		this.string1 = string1;
@@ -22,6 +23,7 @@ public class DPTable {
 		
 		DPTableRow.setSize(numCols);
 		root = DPTableRow.getRoot();
+		tree = new DPTableTree(root);
 		
 		calculate();
 	}
@@ -30,6 +32,28 @@ public class DPTable {
 		rows[0] = root;
 		for (int i = 1; i < numRows; i++) {
 			rows[i] = rows[i-1].addChild(string2.charAt(i-1));
+			for (int j = 1; j < numCols; j++) {
+				int diag = rows[i-1].columns[j-1].value;
+				int left = rows[i].columns[j-1].value;
+				int top  = rows[i-1].columns[j].value;
+				int insert = left + MultiEditDistance.insertionCost;
+				int delete = top  + MultiEditDistance.deletionCost;
+				int swap   = diag + MultiEditDistance.substitutionCost;
+				int match = Integer.MAX_VALUE;
+				if (string1.charAt(j-1) == string2.charAt(i-1))
+					match  = diag + MultiEditDistance.matchCost;
+				int min = Math.min(insert, Math.min(delete, Math.min(swap, match)));
+				rows[i].columns[j] = new DPTableCell(min);
+				if (min == insert)
+					rows[i].columns[j].solutions.add(rows[i-1].columns[j]);
+				else if (min == delete)
+					rows[i].columns[j].solutions.add(rows[i].columns[j-1]);
+				else if (min == swap)
+					rows[i].columns[j].solutions.add(rows[i-1].columns[j-1]);
+				else if (min == match)
+					rows[i].columns[j].solutions.add(rows[i-1].columns[j-1]);
+					
+			}
 			//break;
 		}
 	}

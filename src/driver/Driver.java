@@ -21,11 +21,11 @@ public class Driver {
 		Map.Entry<String, Integer> base = new AbstractMap.SimpleEntry<String, Integer>("Kurt Russell", 1);
 		//Predicate starring = new Predicate("data/starring.txt");
 		List<String> actors = new ArrayList<>();
-		actors.add("Kurt Russle");
-		actors.add("Samuel Jackson");
-		actors.add("Samuel L Jackson");
-		actors.add("Kurt Russel");
-		actors.add("Kurt Russell");
+		actors.add("Kurt BRussle");
+		//actors.add("Samuel Jackson");
+		//actors.add("Samuel L Jackson");
+		//actors.add("Kurt Russel");
+		//actors.add("Kurt Russell");
 		Predicate starring = new Predicate();
 		starring.populate(actors);
 		

@@ -4,15 +4,9 @@ public class DPTableTree {
 	
 	DPTableRow root;
 	
-	public DPTableTree() {
+	public DPTableTree(DPTableRow root) {
 		
-		root.setSize(5);
-		root = DPTableRow.getRoot();
-		
-//		root.addChild("a").addChild("x");
-//		DPTableRow b = root.addChild("b");
-//		b.addChild("y");
-//		b.addChild("z");
+		this.root = root;
 		
 	}
 	

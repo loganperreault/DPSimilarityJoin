@@ -31,7 +31,7 @@ public class MultiEditDistance {
 	        //double value = compare.compare(pair1value, pair2.getKey());
 	    	double value = 1.0;
 	    	
-	    	//System.out.println(word.getKey()+" vs "+pair2.getKey());
+	    	System.out.println(word.getKey()+" vs "+pair2.getKey());
 	    	
 	    	DPTable table = new DPTable(word.getKey(), pair2.getKey());
 	    	System.out.println(table);
