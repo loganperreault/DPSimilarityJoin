@@ -31,16 +31,17 @@ public class Driver {
 		actors.add("Samuel Jackson");
 		//actors.add("Samuel L Jackson");
 		actors.add("Kurt Russel");
-		//actors.add("Kurt Russell");
+		actors.add("Kurt Russell");
 		Predicate starring = new Predicate();
 		starring.populate(actors);
 		
 		MultiEditDistance med = new MultiEditDistance();
 		med.findSimilar(starring, base);
+		System.out.println(med.getCellCount());
 		
 		DPTableRow root = DPTableRow.getRoot();
 		DPTableTree tree = new DPTableTree(root);
-		tree.printTree();
+		//tree.printTree();
 		
 	}
 

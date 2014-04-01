@@ -6,43 +6,57 @@ import driver.Predicate;
 
 public class MultiEditDistance {
 	
+	//protected static int insertionCost = 1;
+	//protected static int deletionCost = 1;
+	//protected static int substitutionCost = 1;
+	//protected static int matchCost = 0;
+	//protected static boolean maximizing = false;
+	
 	double threshold = 0.6;
-	protected static int insertionCost = 1;
-	protected static int deletionCost = 1;
-	protected static int substitutionCost = 1;
-	protected static int matchCost = 0;
-	protected static boolean maximizing = false;
+	protected static boolean rejectedEarlyStopping = true;
+	protected static boolean acceptedEarlyStopping = true;
+	protected static boolean useTree = false;
+	protected static int cellCount = 0;
+	
+	public MultiEditDistance() {
+		
+	}
+	
+	public MultiEditDistance(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree) {
+		setOptions(rejectedEarlyStopping, acceptedEarlyStopping, useTree);
+	}
+	
+	public void setOptions(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree) {
+		MultiEditDistance.rejectedEarlyStopping = rejectedEarlyStopping;
+		MultiEditDistance.acceptedEarlyStopping = acceptedEarlyStopping;
+		MultiEditDistance.useTree = useTree;
+	}
 	
 	public Map.Entry<String, Integer> findSimilar(Predicate predicate, Map.Entry<String, Integer> word) {
 	     
 	    // setup
 	    Map.Entry<String, Integer> pair2, bestMatch = null;
-	    String pair1value = word.getKey();
+	    String string1 = word.getKey();
 	    double bestMatchValue = 0.0;
 	    
 	    // loop through all words in the target predicate
 	    int i;
 	    for (i = 0, pair2 = predicate.getStart(); pair2 != predicate.getLast(); pair2 = predicate.getNext(), i++) {
+	    	String string2 = pair2.getKey();
 	    	
-	    	if (pair2.getKey().isEmpty())
+	    	if (string2.isEmpty())
 	    		continue;
 	    	
-	        // get the similarity value from the string comparison class
-	        //double value = compare.compare(pair1value, pair2.getKey());
-	    	double value = 1.0;
-	    	
-	    	System.out.println(word.getKey()+" vs "+pair2.getKey());
-	    	
 	    	DPTable table = new DPTable(word.getKey(), pair2.getKey());
-	    	table.calculate(threshold);
-	    	//System.out.println(table);
-	    	System.out.println("SIMILARITY: "+table.getSimilarity());
+	    	if (rejectedEarlyStopping)
+	    		table.calculate(threshold, acceptedEarlyStopping);
+	    	else
+	    		table.calculate();
 	    	
-	    	// store the most similar word so far in a variable
-	        if (value > bestMatchValue) {
-                bestMatchValue = value;
-                bestMatch = pair2;
-	        }
+	    	System.out.println(string1+" vs "+string2);
+	    	System.out.println(table);
+	    	System.out.println("SIMILARITY: "+table.getSimilarity());
+	    	System.out.println("ACCEPTED: "+table.accepted());
 	        
 	        //break;
 	        
@@ -54,6 +68,10 @@ public class MultiEditDistance {
     	else
             return null;
 	    
+	}
+	
+	public int getCellCount() {
+		return cellCount;
 	}
 	 
 	public void setThreshold(double threshold) {

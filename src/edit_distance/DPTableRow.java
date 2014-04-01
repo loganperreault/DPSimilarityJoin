@@ -24,7 +24,7 @@ public class DPTableRow {
 		character = null;
 		columns = new DPTableCell[numCols];
 		for (int i = 0; i < numCols; i++)
-			columns[i] = new DPTableCell(i*MultiEditDistance.insertionCost);
+			columns[i] = new DPTableCell(i);
 	}
 	
 	public static void setSize(int sz) {
@@ -38,7 +38,7 @@ public class DPTableRow {
 		this.size = size;
 		columns = new DPTableCell[size];
 		this.character = value;
-		columns[0] = new DPTableCell(index*MultiEditDistance.deletionCost);
+		columns[0] = new DPTableCell(index);
 	}
 	
 	protected DPTableRow addChild(char value) {
