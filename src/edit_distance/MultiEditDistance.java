@@ -13,10 +13,11 @@ public class MultiEditDistance {
 	//protected static boolean maximizing = false;
 	
 	double threshold = 0.6;
-	protected static boolean rejectedEarlyStopping = true;
-	protected static boolean acceptedEarlyStopping = true;
-	protected static boolean useTree = false;
-	protected static int cellCount = 0;
+	protected boolean rejectedEarlyStopping = true;
+	protected boolean acceptedEarlyStopping = true;
+	protected boolean useTree = true;
+	protected int cellCount = 0;
+	protected long runtime = 0;
 	
 	public MultiEditDistance() {
 		
@@ -27,9 +28,9 @@ public class MultiEditDistance {
 	}
 	
 	public void setOptions(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree) {
-		MultiEditDistance.rejectedEarlyStopping = rejectedEarlyStopping;
-		MultiEditDistance.acceptedEarlyStopping = acceptedEarlyStopping;
-		MultiEditDistance.useTree = useTree;
+		this.rejectedEarlyStopping = rejectedEarlyStopping;
+		this.acceptedEarlyStopping = acceptedEarlyStopping;
+		this.useTree = useTree;
 	}
 	
 	public Map.Entry<String, Integer> findSimilar(Predicate predicate, Map.Entry<String, Integer> word) {
@@ -48,15 +49,15 @@ public class MultiEditDistance {
 	    		continue;
 	    	
 	    	DPTable table = new DPTable(word.getKey(), pair2.getKey());
-	    	if (rejectedEarlyStopping)
-	    		table.calculate(threshold, acceptedEarlyStopping);
-	    	else
-	    		table.calculate();
+	    	long startTime = System.currentTimeMillis();
+	    	table.calculate(threshold, rejectedEarlyStopping, acceptedEarlyStopping, useTree);
+	    	runtime += System.currentTimeMillis() - startTime;
+	    	cellCount += table.getCellCount();
 	    	
-	    	System.out.println(string1+" vs "+string2);
-	    	System.out.println(table);
-	    	System.out.println("SIMILARITY: "+table.getSimilarity());
-	    	System.out.println("ACCEPTED: "+table.accepted());
+	    	//System.out.println(string1+" vs "+string2);
+	    	//System.out.println(table);
+	    	//System.out.println("SIMILARITY: "+table.getSimilarity());
+	    	//System.out.println("ACCEPTED: "+table.accepted());
 	        
 	        //break;
 	        
@@ -76,6 +77,13 @@ public class MultiEditDistance {
 	 
 	public void setThreshold(double threshold) {
 		 this.threshold = threshold;
+	}
+	
+	/**
+	 * @return	The total computation time in milliseconds
+	 */
+	public long getRuntime() {
+		return runtime;
 	}
 
 }

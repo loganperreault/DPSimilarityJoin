@@ -5,9 +5,7 @@ public class DPTableTree {
 	DPTableRow root;
 	
 	public DPTableTree(DPTableRow root) {
-		
 		this.root = root;
-		
 	}
 	
 	public void printTree() {

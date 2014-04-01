@@ -11,6 +11,12 @@ public class DPTableRow {
 	protected int index = 0;
 	protected DPTableCell[] columns;
 	protected static int size = 0;
+	protected boolean complete = false;
+	
+	// allows recreation of root for use in experiments
+	public static void reset() {
+		root = null;
+	}
 	
 	public static DPTableRow getRoot() {
 		if (size == 0)
@@ -42,8 +48,15 @@ public class DPTableRow {
 	}
 	
 	protected DPTableRow addChild(char value) {
+		// or add the new child
 		DPTableRow child = new DPTableRow(value, ++index, size);
 		children.put(child.character, child);
+		return child;
+	}
+	
+	protected DPTableRow getChild(char value) {
+		// look to see if the child already exists
+		DPTableRow child = children.get(value);
 		return child;
 	}
 	

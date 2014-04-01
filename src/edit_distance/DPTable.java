@@ -9,6 +9,7 @@ public class DPTable {
 	int[] columnWidths;
 	DPTableRow root;
 	DPTableTree tree;
+	private int cellCount = 0;
 	private Integer solution = null;
 	private Double similarity = null;
 	private boolean calculated = false;
@@ -36,54 +37,75 @@ public class DPTable {
 	}
 	
 	public Integer calculate(double threshold) {
-		return calculate(threshold, false);
+		return calculate(threshold, false, false, false);
 	}
 	
-	public Integer calculate(double threshold, boolean acceptedEarlyStopping) {
+	public Integer calculate(double threshold, boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree) {
 		if (threshold < 0.0 || threshold > 1.0)
 			throw new IllegalArgumentException("Threshold must be between in the range (0.0 , 1.0)");
 		int thresholdEdits = (int) ((1.0 - threshold) * maxEdits);
 		calculated = true;
 		
+		cellCount = 0;
+		
 		rows[0] = root;
 		for (int i = 1; i < numRows; i++) {
-			rows[i] = rows[i-1].addChild(string2.charAt(i-1));
-			int bestOfRow = Integer.MAX_VALUE;
-			for (int j = 1; j < numCols; j++) {
-				int diag = rows[i-1].columns[j-1].value;
-				int left = rows[i].columns[j-1].value;
-				int top  = rows[i-1].columns[j].value;
-				int insert = left + 1;
-				int delete = top  + 1;
-				int swap   = diag + 1;
-				int match = Integer.MAX_VALUE;
-				if (string1.charAt(j-1) == string2.charAt(i-1)) {
-					match  = diag + 0;
-				}
-				int best = Math.min(insert, Math.min(delete, Math.min(swap, match)));
-				rows[i].columns[j] = new DPTableCell(best);
-				if (best == insert)
-					rows[i].columns[j].solutions.add(rows[i-1].columns[j]);
-				else if (best == delete)
-					rows[i].columns[j].solutions.add(rows[i].columns[j-1]);
-				else if (best == swap)
-					rows[i].columns[j].solutions.add(rows[i-1].columns[j-1]);
-				else if (best == match)
-					rows[i].columns[j].solutions.add(rows[i-1].columns[j-1]);
-				bestOfRow = Math.min(best, bestOfRow);
-				MultiEditDistance.cellCount++;
+			if (useTree) {
+				rows[i] = rows[i-1].getChild(string2.charAt(i-1));
 			}
+			if (rows[i] == null)
+				rows[i] = rows[i-1].addChild(string2.charAt(i-1));
 			
-			// rejectedEarlyStopping
-			if (bestOfRow > thresholdEdits)
-				break;
+			if (!rows[i].complete) {
 			
-			// acceptedEarlyStopping
-			if (acceptedEarlyStopping) {
-				if (bestOfRow + Math.max(numRows, numCols) - i < thresholdEdits) {
-					setSolution(thresholdEdits);
-					break;
+				int bestOfRow = Integer.MAX_VALUE;
+				int bestColIndex = 0;
+				for (int j = 1; j < numCols; j++) {
+					int diag = rows[i-1].columns[j-1].value;
+					int left = rows[i].columns[j-1].value;
+					int top  = rows[i-1].columns[j].value;
+					int insert = left + 1;
+					int delete = top  + 1;
+					int swap   = diag + 1;
+					int match = Integer.MAX_VALUE;
+					if (string1.charAt(j-1) == string2.charAt(i-1)) {
+						match  = diag + 0;
+					}
+					int best = Math.min(insert, Math.min(delete, Math.min(swap, match)));
+					rows[i].columns[j] = new DPTableCell(best);
+					if (best == insert)
+						rows[i].columns[j].solutions.add(rows[i-1].columns[j]);
+					else if (best == delete)
+						rows[i].columns[j].solutions.add(rows[i].columns[j-1]);
+					else if (best == swap)
+						rows[i].columns[j].solutions.add(rows[i-1].columns[j-1]);
+					else if (best == match)
+						rows[i].columns[j].solutions.add(rows[i-1].columns[j-1]);
+					if (best < bestOfRow) {
+						bestOfRow = best;
+						bestColIndex = j;
+					}
+					cellCount++;
 				}
+				
+				// rejectedEarlyStopping
+				if (rejectedEarlyStopping)
+					if (bestOfRow > thresholdEdits)
+						break;
+				
+				// acceptedEarlyStopping
+				if (acceptedEarlyStopping) {
+					if (bestOfRow + numRows - i <= (maxEdits - thresholdEdits) &&
+						bestOfRow + numCols - bestColIndex <= (maxEdits - thresholdEdits)) {
+						setSolution(thresholdEdits);
+						break;
+					}
+				}
+				
+				rows[i].complete = true;
+			
+			} else {
+				//System.out.println("Reuse: '"+rows[i]+"'");
 			}
 					
 		}
@@ -110,6 +132,10 @@ public class DPTable {
 		if (!calculated)
 			throw new IllegalArgumentException("Call calculate() prior to retrieving values.");
 		return similarity;
+	}
+	
+	public int getCellCount() {
+		return cellCount;
 	}
 	
 	public String toString() {
