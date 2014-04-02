@@ -50,7 +50,9 @@ public class DPTable {
 		
 		cellCount = 0;
 		
-		rows[0] = root;
+		System.out.println(DPTableRow.str);
+		
+		rows[0] = DPTableRow.getRoot();
 		for (int i = 1; i < numRows; i++) {
 			if (useTree) {
 				rows[i] = rows[i-1].getChild(string2.charAt(i-1));
@@ -63,7 +65,8 @@ public class DPTable {
 				int bestOfRow = Integer.MAX_VALUE;
 				int bestColIndex = 0;
 				int j;
-				for (j = rows[i].calculated; j < numCols; j++) {
+				System.out.println(numCols+" vs "+rows[0].columns.length);
+				for (j = Math.max(rows[i].calculated,1); j < numCols; j++) {
 				//for (j = 1; j < numCols; j++) {
 					int diag = rows[i-1].columns[j-1].value;
 					int left = rows[i].columns[j-1].value;
@@ -178,51 +181,6 @@ public class DPTable {
 	
 	public boolean accepted() {
 		return accepted;
-	}
-	
-	public static void swapWord(String word) {
-		if (DPTableRow.str == null) {
-			setWord(word);
-		} else {
-			System.out.println("SWAPPING "+word+" FOR "+DPTableRow.str);
-			DPTableRow.setSize(word.length() + 1);
-			for (Entry<Character, DPTableRow> childRow : DPTableRow.getRoot().children.entrySet()) {
-				System.out.println("------------------------------");
-				transferRow(childRow.getValue(), word);
-			}
-			DPTableRow.str = word;
-		}
-	}
-	
-	private static void transferRow(DPTableRow row, String word) {
-		DPTableCell[] newColumns = new DPTableCell[word.length() + 1];
-		int i;
-		for (i = 0; i < Math.min(DPTableRow.str.length(), word.length()); i++) {
-			if (DPTableRow.str.charAt(i) == word.charAt(i))
-				newColumns[i] = row.columns[i];
-			else
-				break;
-		}
-		
-		System.out.print("OLD: ");
-		for (DPTableCell cell : row.columns)
-			System.out.print(cell+",");
-		System.out.println();
-		System.out.print("   NEW: ");
-		for (DPTableCell cell : newColumns)
-			System.out.print(cell+",");
-		System.out.println();
-		
-		row.columns = newColumns;
-		row.calculated = i;
-		for (Entry<Character, DPTableRow> childRow : row.children.entrySet())
-			transferRow(childRow.getValue(), word);
-	}
-	
-	public static void setWord(String word) {
-		DPTableRow.str = word;
-		DPTableRow.reset();
-		DPTableRow.setSize(word.length() + 1);
 	}
 
 }

@@ -63,15 +63,15 @@ public class MultiEditDistance {
 	    	if (string2.isEmpty())
 	    		continue;
 	    	
-	    	DPTable table = new DPTable(string1, string2);
-	    	
 	    	if (i == 0) {
 	    		if (efficientJoin) {
-	    			DPTable.swapWord(word.getKey());
+	    			DPTableRow.swapWord(word.getKey());
 	    		} else {
-	    			DPTable.setWord(word.getKey());
+	    			DPTableRow.setWord(word.getKey());
 	    		}
 	    	}
+	    	
+	    	DPTable table = new DPTable(string1, string2);
 	    	
 	    	long startTime = System.currentTimeMillis();
 	    	table.calculate(threshold, rejectedEarlyStopping, acceptedEarlyStopping, useTree);

@@ -2,6 +2,7 @@ package edit_distance;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class DPTableRow {
 	
@@ -76,6 +77,58 @@ public class DPTableRow {
 			row += String.format("%1$" + columnWidths[i] + "s ", val) + "|";
 		}
 		return row;
+	}
+	
+	public static void swapWord(String word) {
+		if (str == null) {
+			setWord(word);
+		} else {
+			setSize(word.length() + 1);
+			DPTableCell[] newColumn = new DPTableCell[word.length() + 1];
+			for (int i = 0; i < newColumn.length; i++)
+				newColumn[i] = new DPTableCell(i);
+			root.columns = newColumn;
+			for (Entry<Character, DPTableRow> childRow : getRoot().children.entrySet()) {
+				transferRow(childRow.getValue(), word);
+			}
+			str = word;
+		}
+	}
+	
+	private static void transferRow(DPTableRow row, String word) {
+		if (row != null) {
+			DPTableCell[] newColumns = new DPTableCell[word.length() + 1];
+			int i;
+			newColumns[0] = row.columns[0];
+			for (i = 0; i < Math.min(str.length(), word.length()); i++) {
+				if (str.charAt(i) == word.charAt(i))
+					newColumns[i+1] = row.columns[i+1];
+				else
+					break;
+			}
+			
+			System.out.print("OLD: ");
+			for (DPTableCell cell : row.columns)
+				System.out.print(cell+",");
+			System.out.println();
+			System.out.print("   NEW: ");
+			for (DPTableCell cell : newColumns)
+				System.out.print(cell+",");
+			System.out.println();
+			
+			row.columns = newColumns;
+			row.calculated = i;
+		}
+		
+		for (Entry<Character, DPTableRow> childRow : row.children.entrySet())
+			transferRow(childRow.getValue(), word);
+	}
+	
+	public static void setWord(String word) {
+		str = word;
+		reset();
+		System.out.println("NEW SIZE: "+(word.length()+1));
+		setSize(word.length() + 1);
 	}
 
 }

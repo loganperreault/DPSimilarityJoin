@@ -38,10 +38,10 @@ public class Driver {
 		
 		// put desired methods in a hashmap for testing
 		Map<String, MultiEditDistance> methods = new LinkedHashMap<String, MultiEditDistance>();
-		methods.put("Base", medBase);
-		methods.put("Early Stopping", medEarlyStopping);
-		methods.put("Tree", medTree);
-		methods.put("Early Stopping Tree", medEarlyStoppingTree);
+//		methods.put("Base", medBase);
+//		methods.put("Early Stopping", medEarlyStopping);
+//		methods.put("Tree", medTree);
+//		methods.put("Early Stopping Tree", medEarlyStoppingTree);
 		methods.put("Efficient Join", medEfficientJoin);
 		
 		runExperiments(methods, predicate1, predicate2, false);
@@ -84,10 +84,10 @@ public class Driver {
 	
 	public static Predicate getToyPredicate1() {
 		List<String> strings1 = new ArrayList<>();
-		strings1.add("Kurt Russell abc");
-		strings1.add("Kurt Rupert abc");
-		//strings1.add("Samuel L Jackson");
-		//strings1.add("Humphrey Bogart");
+		strings1.add("Kurt Russell");
+		strings1.add("Kurt Rupert");
+		strings1.add("Samuel L Jackson");
+		strings1.add("Humphrey Bogart");
 		Predicate predicate = new Predicate();
 		predicate.populate(strings1);
 		return predicate;
@@ -95,9 +95,9 @@ public class Driver {
 	
 	public static Predicate getToyPredicate2() {
 		List<String> strings2 = new ArrayList<>();
-		//strings2.add("Henry Russell");
-		//strings2.add("Samuel Jackson");
-		//strings2.add("Sam Jackson");
+		strings2.add("Henry Russell");
+		strings2.add("Samuel Jackson");
+		strings2.add("Sam Jackson");
 		strings2.add("Kurt Russel abc");
 		Predicate predicate = new Predicate();
 		predicate.populate(strings2);
