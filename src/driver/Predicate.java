@@ -261,5 +261,17 @@ public class Predicate {
     		System.out.println(entry.getKey()+"    "+entry.getValue());
     	}
     }
+    
+    public void truncate(int size) {
+    	Map<String, Integer> newWords = new LinkedHashMap<>();
+    	int i = 0;
+    	for (Map.Entry<String, Integer> entry : words.entrySet()) {
+    		newWords.put(entry.getKey(), entry.getValue());
+    		i++;
+    		if (i > size)
+    			break;
+    	}
+    	words = newWords;
+    }
 
 }

@@ -16,16 +16,22 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 		
-		// TODO: Setup predicate to predicate matches, not just predicate to entry (join, not search)
+		// TODO: pre-check if string lengths are too different to even run
 		// TODO: look into pruning tree if it gets too expensive to maintain (use DPTableTree class)
 		
-//		String baseString = "Kurt Russell";
-//		DPTableRow.setSize(baseString.length() + 1);
-//		Map.Entry<String, Integer> base = new AbstractMap.SimpleEntry<String, Integer>(baseString, 1);
-		//Predicate starring = new Predicate("data/starring.txt");
+//		Predicate predicate1 = getToyPredicate1();
+//		Predicate predicate2 = getToyPredicate2();
 		
-		Predicate predicate1 = getToyPredicate1();
-		Predicate predicate2 = getToyPredicate2();
+		Predicate predicate1 = new Predicate("data/starring.txt");
+		Predicate predicate2 = new Predicate("data/actor.txt");
+		
+		predicate1.truncate(10);
+		predicate2.truncate(10);
+		
+		for (Map.Entry<String, Integer> pair = predicate1.getStart(); pair != predicate1.getLast(); pair = predicate1.getNext())
+			System.out.println(pair.getKey());
+		
+		System.out.println("Comparisons: "+(predicate1.size()*predicate2.size()));
 		
 		// for methods using different parameters for MultiEditDistance
 		MultiEditDistance medBase = new MultiEditDistance(false, false, false, false);
