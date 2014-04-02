@@ -1,5 +1,7 @@
 package edit_distance;
 
+import java.util.Map.Entry;
+
 public class DPTable {
 	
 	String string1, string2;
@@ -56,11 +58,13 @@ public class DPTable {
 			if (rows[i] == null)
 				rows[i] = rows[i-1].addChild(string2.charAt(i-1));
 			
-			if (!rows[i].complete) {
+			if (rows[i].calculated < numCols) {
 			
 				int bestOfRow = Integer.MAX_VALUE;
 				int bestColIndex = 0;
-				for (int j = 1; j < numCols; j++) {
+				int j;
+				for (j = rows[i].calculated; j < numCols; j++) {
+				//for (j = 1; j < numCols; j++) {
 					int diag = rows[i-1].columns[j-1].value;
 					int left = rows[i].columns[j-1].value;
 					int top  = rows[i-1].columns[j].value;
@@ -102,13 +106,16 @@ public class DPTable {
 					}
 				}
 				
-				rows[i].complete = true;
+				rows[i].calculated = j;
 			
 			} else {
 				//System.out.println("Reuse: '"+rows[i]+"'");
 			}
 					
 		}
+		
+		//System.out.println(rows[4]);
+		
 		if (rows[numRows-1] != null)
 			setSolution(rows[numRows-1].columns[numCols-1].value);
 		if (solution != null && solution >= thresholdEdits)
@@ -171,6 +178,51 @@ public class DPTable {
 	
 	public boolean accepted() {
 		return accepted;
+	}
+	
+	public static void swapWord(String word) {
+		if (DPTableRow.str == null) {
+			setWord(word);
+		} else {
+			System.out.println("SWAPPING "+word+" FOR "+DPTableRow.str);
+			DPTableRow.setSize(word.length() + 1);
+			for (Entry<Character, DPTableRow> childRow : DPTableRow.getRoot().children.entrySet()) {
+				System.out.println("------------------------------");
+				transferRow(childRow.getValue(), word);
+			}
+			DPTableRow.str = word;
+		}
+	}
+	
+	private static void transferRow(DPTableRow row, String word) {
+		DPTableCell[] newColumns = new DPTableCell[word.length() + 1];
+		int i;
+		for (i = 0; i < Math.min(DPTableRow.str.length(), word.length()); i++) {
+			if (DPTableRow.str.charAt(i) == word.charAt(i))
+				newColumns[i] = row.columns[i];
+			else
+				break;
+		}
+		
+		System.out.print("OLD: ");
+		for (DPTableCell cell : row.columns)
+			System.out.print(cell+",");
+		System.out.println();
+		System.out.print("   NEW: ");
+		for (DPTableCell cell : newColumns)
+			System.out.print(cell+",");
+		System.out.println();
+		
+		row.columns = newColumns;
+		row.calculated = i;
+		for (Entry<Character, DPTableRow> childRow : row.children.entrySet())
+			transferRow(childRow.getValue(), word);
+	}
+	
+	public static void setWord(String word) {
+		DPTableRow.str = word;
+		DPTableRow.reset();
+		DPTableRow.setSize(word.length() + 1);
 	}
 
 }

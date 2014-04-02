@@ -1,5 +1,6 @@
 package edit_distance;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import driver.Predicate;
@@ -16,45 +17,68 @@ public class MultiEditDistance {
 	protected boolean rejectedEarlyStopping = true;
 	protected boolean acceptedEarlyStopping = true;
 	protected boolean useTree = true;
+	protected boolean efficientJoin = true;
 	protected int cellCount = 0;
 	protected long runtime = 0;
+	protected Map<Map.Entry<String, Integer>, Map.Entry<String, Integer>> mapping = new HashMap<>();
 	
 	public MultiEditDistance() {
 		
 	}
 	
-	public MultiEditDistance(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree) {
-		setOptions(rejectedEarlyStopping, acceptedEarlyStopping, useTree);
+	public MultiEditDistance(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree, boolean efficientJoin) {
+		setOptions(rejectedEarlyStopping, acceptedEarlyStopping, useTree, efficientJoin);
 	}
 	
-	public void setOptions(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree) {
+	public void setOptions(boolean rejectedEarlyStopping, boolean acceptedEarlyStopping, boolean useTree, boolean efficientJoin) {
 		this.rejectedEarlyStopping = rejectedEarlyStopping;
 		this.acceptedEarlyStopping = acceptedEarlyStopping;
 		this.useTree = useTree;
+		this.efficientJoin = efficientJoin;
 	}
 	
-	public Map.Entry<String, Integer> findSimilar(Predicate predicate, Map.Entry<String, Integer> word) {
+	public Map<Map.Entry<String, Integer>, Map.Entry<String, Integer>> mapSimilar(Predicate predicate1, Predicate predicate2) {
+		
+		for (Map.Entry<String, Integer> pair = predicate1.getStart(); pair != predicate1.getLast(); pair = predicate1.getNext()) {
+			findSimilar(pair, predicate2);
+		}
+		
+		return mapping;
+	}
+	
+	public Map<Map.Entry<String, Integer>, Map.Entry<String, Integer>> findSimilar(Map.Entry<String, Integer> word, Predicate predicate) {
 	     
 	    // setup
-	    Map.Entry<String, Integer> pair2, bestMatch = null;
 	    String string1 = word.getKey();
-	    double bestMatchValue = 0.0;
+	    
+	    DPTableRow.setSize(string1.length() + 1);
+		//DPTableRow.reset();
 	    
 	    // loop through all words in the target predicate
 	    int i;
-	    for (i = 0, pair2 = predicate.getStart(); pair2 != predicate.getLast(); pair2 = predicate.getNext(), i++) {
-	    	String string2 = pair2.getKey();
+	    Map.Entry<String, Integer> pair = null;
+	    for (i = 0, pair = predicate.getStart(); pair != predicate.getLast(); pair = predicate.getNext(), i++) {
+	    	String string2 = pair.getKey();
 	    	
 	    	if (string2.isEmpty())
 	    		continue;
 	    	
-	    	DPTable table = new DPTable(word.getKey(), pair2.getKey());
+	    	DPTable table = new DPTable(string1, string2);
+	    	
+	    	if (i == 0) {
+	    		if (efficientJoin) {
+	    			DPTable.swapWord(word.getKey());
+	    		} else {
+	    			DPTable.setWord(word.getKey());
+	    		}
+	    	}
+	    	
 	    	long startTime = System.currentTimeMillis();
 	    	table.calculate(threshold, rejectedEarlyStopping, acceptedEarlyStopping, useTree);
 	    	runtime += System.currentTimeMillis() - startTime;
 	    	cellCount += table.getCellCount();
 	    	
-	    	//System.out.println(string1+" vs "+string2);
+	    	//System.out.println(i+": "+string1+" vs "+string2);
 	    	//System.out.println(table);
 	    	//System.out.println("SIMILARITY: "+table.getSimilarity());
 	    	//System.out.println("ACCEPTED: "+table.accepted());
@@ -63,11 +87,7 @@ public class MultiEditDistance {
 	        
 	    }
 	    
-	    // return the best
-	    if (bestMatchValue > threshold)
-            return bestMatch;
-    	else
-            return null;
+	    return mapping;
 	    
 	}
 	

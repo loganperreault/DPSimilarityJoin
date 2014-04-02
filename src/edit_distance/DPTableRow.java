@@ -11,7 +11,8 @@ public class DPTableRow {
 	protected int index = 0;
 	protected DPTableCell[] columns;
 	protected static int size = 0;
-	protected boolean complete = false;
+	protected int calculated = 1;
+	protected static String str = null;
 	
 	// allows recreation of root for use in experiments
 	public static void reset() {
@@ -34,8 +35,8 @@ public class DPTableRow {
 	}
 	
 	public static void setSize(int sz) {
-		if (root != null)
-			throw new IllegalArgumentException("Must be called prior to first getRoot() call.");
+//		if (root != null)
+//			throw new IllegalArgumentException("Must be called prior to first getRoot() call.");
 		size = sz;
 	}
 	
