@@ -50,8 +50,6 @@ public class DPTable {
 		
 		cellCount = 0;
 		
-		System.out.println(DPTableRow.str);
-		
 		rows[0] = DPTableRow.getRoot();
 		for (int i = 1; i < numRows; i++) {
 			if (useTree) {
@@ -65,7 +63,6 @@ public class DPTable {
 				int bestOfRow = Integer.MAX_VALUE;
 				int bestColIndex = 0;
 				int j;
-				System.out.println(numCols+" vs "+rows[0].columns.length);
 				for (j = Math.max(rows[i].calculated,1); j < numCols; j++) {
 				//for (j = 1; j < numCols; j++) {
 					int diag = rows[i-1].columns[j-1].value;

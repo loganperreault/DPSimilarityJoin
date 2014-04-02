@@ -38,10 +38,10 @@ public class Driver {
 		
 		// put desired methods in a hashmap for testing
 		Map<String, MultiEditDistance> methods = new LinkedHashMap<String, MultiEditDistance>();
-//		methods.put("Base", medBase);
-//		methods.put("Early Stopping", medEarlyStopping);
-//		methods.put("Tree", medTree);
-//		methods.put("Early Stopping Tree", medEarlyStoppingTree);
+		methods.put("Base", medBase);
+		methods.put("Early Stopping", medEarlyStopping);
+		methods.put("Tree", medTree);
+		methods.put("Early Stopping Tree", medEarlyStoppingTree);
 		methods.put("Efficient Join", medEfficientJoin);
 		
 		runExperiments(methods, predicate1, predicate2, false);

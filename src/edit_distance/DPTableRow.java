@@ -18,6 +18,8 @@ public class DPTableRow {
 	// allows recreation of root for use in experiments
 	public static void reset() {
 		root = null;
+		str = null;
+		size = 0;
 	}
 	
 	public static DPTableRow getRoot() {
@@ -96,38 +98,27 @@ public class DPTableRow {
 	}
 	
 	private static void transferRow(DPTableRow row, String word) {
-		if (row != null) {
-			DPTableCell[] newColumns = new DPTableCell[word.length() + 1];
-			int i;
-			newColumns[0] = row.columns[0];
-			for (i = 0; i < Math.min(str.length(), word.length()); i++) {
-				if (str.charAt(i) == word.charAt(i))
-					newColumns[i+1] = row.columns[i+1];
-				else
-					break;
-			}
-			
-			System.out.print("OLD: ");
-			for (DPTableCell cell : row.columns)
-				System.out.print(cell+",");
-			System.out.println();
-			System.out.print("   NEW: ");
-			for (DPTableCell cell : newColumns)
-				System.out.print(cell+",");
-			System.out.println();
-			
-			row.columns = newColumns;
-			row.calculated = i;
+		
+		DPTableCell[] newColumns = new DPTableCell[word.length() + 1];
+		int i;
+		newColumns[0] = row.columns[0];
+		for (i = 0; i < Math.min(str.length(), word.length()); i++) {
+			if (str.charAt(i) == word.charAt(i))
+				newColumns[i+1] = row.columns[i+1];
+			else
+				break;
 		}
+		
+		row.columns = newColumns;
+		row.calculated = i;
 		
 		for (Entry<Character, DPTableRow> childRow : row.children.entrySet())
 			transferRow(childRow.getValue(), word);
 	}
 	
 	public static void setWord(String word) {
-		str = word;
 		reset();
-		System.out.println("NEW SIZE: "+(word.length()+1));
+		str = word;
 		setSize(word.length() + 1);
 	}
 

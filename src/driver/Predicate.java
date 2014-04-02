@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,7 +23,7 @@ public class Predicate {
     // the confidence value associated with matched predicates from an algorithm
     private double confidence = -1.0;
     // a map relating a word (line of text) to the number of times that word appears
-    private Map<String, Integer> words = new HashMap<String, Integer>();
+    private Map<String, Integer> words = new LinkedHashMap<String, Integer>();
     // an iterator used for looping through the words in the predicate
     Iterator<Entry<String, Integer>> it;
     // an arrayList for getting entries in the predicate
